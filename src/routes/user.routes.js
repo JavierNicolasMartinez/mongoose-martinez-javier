@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  addBadgeToUser,
   createUser,
   deleteUser,
   getAllUser,
@@ -13,3 +14,4 @@ userRoutes.get("/users", getAllUser);
 userRoutes.get("/users/:id", getUserById);
 userRoutes.put("/users/:id", updateUser);
 userRoutes.delete("/users/:id", deleteUser);
+userRoutes.put("/:userId/badges/:badgeId", addBadgeToUser);

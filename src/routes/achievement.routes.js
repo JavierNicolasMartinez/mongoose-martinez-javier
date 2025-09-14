@@ -1,4 +1,5 @@
 import {
+  assignAchievementToUser,
   createAchievement,
   deleteAchievement,
   getAchievementById,
@@ -13,3 +14,7 @@ achievementRoutes.get("/achievement", getAllAchievement);
 achievementRoutes.get("/achievement/:id", getAchievementById);
 achievementRoutes.put("/achievement/:id", updateAchievement);
 achievementRoutes.delete("/achievement/:id", deleteAchievement);
+achievementRoutes.put(
+  "/achievements/:achievementId/assign/:userId",
+  assignAchievementToUser
+);

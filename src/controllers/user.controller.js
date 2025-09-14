@@ -26,7 +26,9 @@ export const createUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find()
+      .populate("uniqueAchievement")
+      .populate("badges");
 
     res.status(200).json({
       ok: true,
@@ -45,7 +47,16 @@ export const getUserById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id)
+      .populate("uniqueAchievement")
+      .populate("badges");
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
 
     res.status(200).json({
       ok: true,
@@ -106,6 +117,42 @@ export const deleteUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Error interno del servidor",
+    });
+  }
+};
+//Información: Funciones de js cuando tenemos un objeto: Push (recomendado por el profe - Save)
+export const addBadgeToUser = async (req, res) => {
+  const { userId, badgeId } = req.params;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
+
+    // Verifica si la insignia ya existe para evitar duplicados
+    if (user.badges.includes(badgeId)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "El usuario ya tiene esta insignia",
+      });
+    }
+    user.badges.push(badgeId); // Agrega el ID de la insignia al array
+    await user.save(); // Guarda el usuario con la nueva insignia
+
+    // Puedo usar populate para devolver el usuario con la insignia agregada asi me aparece todo
+    const updatedUser = await UserModel.findById(userId)
+      .populate("uniqueAchievement")
+      .populate("badges");
+    res
+      .status(200)
+      .json({ ok: true, msg: "Insignia agregada", data: updateUser });
+  } catch (error) {
     return res.status(500).json({
       ok: false,
       msg: "Error interno del servidor",

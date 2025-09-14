@@ -10,18 +10,18 @@ const AchievementSchema = new Schema({
     type: String,
   },
 
-  // //Referencia con categoria muchos a uno
-  // category: {
-  //     type: Schema.Types.ObjectId,
-  //     ref: "Category",
-  //     required: true,
-  // },
+  //Referencia con categoria muchos a uno
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
 
-  // //Relación uno a uno con el usuario
-  // earnedBy: {
-  //     type: Schema.Types.ObjectId,
-  //     ref: "User"
-  // }
+  //Relación uno a uno con el usuario
+  earnedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 export const AchievementModel = model("Achievement", AchievementSchema);

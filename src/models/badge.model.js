@@ -9,13 +9,13 @@ const BadgeSchema = new Schema({
     type: String,
   },
 
-  //Aca va la relación de muchos a muchos con usuarios
-  //   users: [
-  //     {
-  //       type: Schema.Types.ObjectId,
-  //       ref: "User",
-  //     },
-  //   ],
+  // Aca va la relación de muchos a muchos con usuarios
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 export const BadgeModel = model("Badge", BadgeSchema);
