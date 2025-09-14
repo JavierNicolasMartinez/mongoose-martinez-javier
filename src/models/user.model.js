@@ -16,6 +16,18 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    // One-to-one reference to a unique Achievement
+    uniqueAchievement: {
+      type: Schema.Types.ObjectId,
+      ref: "Achievement",
+    },
+    // Many-to-many reference to Badges
+    badges: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Badge",
+      },
+    ],
   },
   {
     versionKey: false,
