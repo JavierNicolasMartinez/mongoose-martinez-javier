@@ -1,13 +1,15 @@
+import { AchievementModel } from "../models/achievement.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const createUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, profile } = req.body;
 
   try {
     const newUser = await UserModel.create({
       username,
       email,
       password,
+      profile,
     });
 
     res.status(201).json({
@@ -73,18 +75,16 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { username } = req.body;
+  const updateData = req.body;
 
   try {
     // const user = await UserModel.findById(id);
 
     // const updatedUser2 = await UserModel.updateOne({ _id: id }, { username });
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      id,
-      { username },
-      { new: true }
-    );
+    const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     res.status(200).json({
       ok: true,
@@ -107,8 +107,25 @@ export const deleteUser = async (req, res) => {
     // const user = await UserModel.findById(id);
 
     // const deletedUser2 = await UserModel.deleteOne({ _id: id });
+    const user = await UserModel.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: "Usuario no encontrado",
+      });
+    }
 
-    const deletedUser = await UserModel.findByIdAndDelete(id);
+    // Lógica para el "borrado en cascada":
+    // Si el usuario tiene un logro único, bórralo también
+    if (user.uniqueAchievement) {
+      await AchievementModel.findByIdAndDelete(user.uniqueAchievement);
+    }
+
+    const deletedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true, deletedAt: new Date() },
+      { new: true }
+    );
 
     res.status(200).json({
       ok: true,
@@ -126,8 +143,10 @@ export const deleteUser = async (req, res) => {
 //Información: Funciones de js cuando tenemos un objeto: Push (recomendado por el profe - Save)
 export const addBadgeToUser = async (req, res) => {
   const { userId, badgeId } = req.params;
+  console.log({ userId, badgeId });
   try {
     const user = await UserModel.findById(userId);
+
     if (!user) {
       return res.status(404).json({
         ok: false,
@@ -142,8 +161,8 @@ export const addBadgeToUser = async (req, res) => {
         msg: "El usuario ya tiene esta insignia",
       });
     }
-    user.badges.push(badgeId); // Agrega el ID de la insignia al array
-    await user.save(); // Guarda el usuario con la nueva insignia
+    user.badges.push(badgeId); // Agregar el ID de la insignia al array
+    await user.save(); // Guardar el usuario con la nueva insignia
 
     // Puedo usar populate para devolver el usuario con la insignia agregada asi me aparece todo
     const updatedUser = await UserModel.findById(userId)
@@ -151,7 +170,7 @@ export const addBadgeToUser = async (req, res) => {
       .populate("badges");
     res
       .status(200)
-      .json({ ok: true, msg: "Insignia agregada", data: updateUser });
+      .json({ ok: true, msg: "Insignia agregada", data: updatedUser });
   } catch (error) {
     return res.status(500).json({
       ok: false,

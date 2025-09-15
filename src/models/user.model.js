@@ -1,3 +1,4 @@
+import { profile } from "console";
 import { model, Schema, Types } from "mongoose";
 
 const UserSchema = new Schema(
@@ -15,6 +16,10 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
+    },
+    profile: {
+      firstName: { type: String },
+      lastName: { type: String },
     },
     // One-to-one reference to a unique Achievement
     uniqueAchievement: {

@@ -2,12 +2,12 @@ import { AchievementModel } from "../models/achievement.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const createAchievement = async (req, res) => {
-  const { name, description, categoryId } = req.body;
+  const { name, description, category_id } = req.body;
   try {
     const newAchievement = await AchievementModel.create({
       name,
       description,
-      category: categoryId,
+      category: category_id,
     });
 
     res.status(201).json({

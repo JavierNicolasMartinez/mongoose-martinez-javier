@@ -7,6 +7,12 @@ export const createCategory = async (req, res) => {
       name,
       description,
     });
+
+    res.status(201).json({
+      ok: true,
+      msg: "Categoria creada correctamente",
+      data: newCategory,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({

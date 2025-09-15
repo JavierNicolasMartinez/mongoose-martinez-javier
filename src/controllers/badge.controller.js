@@ -7,6 +7,12 @@ export const createBadge = async (req, res) => {
       name,
       iconUrl,
     });
+
+    res.status(201).json({
+      ok: true,
+      msg: "Insignia creada correctamente",
+      data: newBadge,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -89,7 +95,7 @@ export const deleteBadge = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // 1. Encuentra la insignia para verificar su existencia
+    // 1. Encontramos la insignia para verificar su existencia y ver que hacer con ella
     const badgeToDelete = await BadgeModel.findById(id);
 
     if (!badgeToDelete) {
@@ -99,14 +105,14 @@ export const deleteBadge = async (req, res) => {
       });
     }
 
-    // 2. Encuentra todos los usuarios que tienen esta insignia
-    const usersWithBadge = await UserModel.find({ badges: id });
+    // // 2. Encontramos todos los usuarios que tienen esta insignia
+    // const usersWithBadge = await UserModel.find({ badges: id });
 
-    // 3. Itera sobre cada usuario y elimina la referencia de la insignia
-    for (const user of usersWithBadge) {
-      user.badges = user.badges.filter((badgeId) => badgeId.toString() !== id);
-      await user.save();
-    }
+    // // 3. Itera sobre cada usuario y elimina la referencia de la insignia
+    // for (const user of usersWithBadge) {
+    //   user.badges = user.badges.filter((badgeId) => badgeId.toString() !== id);
+    //   await user.save();
+    // }
 
     const deletedBadge = await BadgeModel.findByIdAndDelete(id);
 
