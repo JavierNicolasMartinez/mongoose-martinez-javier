@@ -1,4 +1,3 @@
-import { profile } from "console";
 import { model, Schema, Types } from "mongoose";
 
 const UserSchema = new Schema(
@@ -33,6 +32,16 @@ const UserSchema = new Schema(
         ref: "Badge",
       },
     ],
+    //Eliminación logica
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    //se puede usar solo uno. Se que son activos si los deletedAt para saber los activos y desactivos-
   },
   {
     versionKey: false,
